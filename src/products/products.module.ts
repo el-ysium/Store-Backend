@@ -1,21 +1,12 @@
-// src/products/products.module.ts
-import { Module, NestModule, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
-import { ProductsController } from './products.controller';
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Product } from './entities/product.entity';
 import { ProductsService } from './products.service';
-import { AuthMiddleware } from '../common/middleware/auth.middleware';
+import { ProductsController } from './products.controller';
 
 @Module({
-  controllers: [ProductsController],
+  imports: [TypeOrmModule.forFeature([Product])],
   providers: [ProductsService],
+  controllers: [ProductsController],
 })
-export class ProductsModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthMiddleware)
-      .forRoutes(
-        { path: 'products', method: RequestMethod.POST },
-        { path: 'products/:id', method: RequestMethod.PATCH },
-        { path: 'products/:id', method: RequestMethod.DELETE },
-      );
-  }
-}
+export class ProductsModule {}

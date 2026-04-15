@@ -1,15 +1,19 @@
-import { IsString, IsNumber, IsPositive, MinLength } from 'class-validator';
+import { IsString, IsNumber, IsPositive, MinLength, IsInt, Min } from 'class-validator';
 
 export class CreateProductDto {
   @IsString()
-  @MinLength(2, { message: 'Name must be at least 2 characters' })
-  name!: string;
-
-  @IsNumber()
-  @IsPositive({ message: 'Price must be a positive number' })
-  price!: number;
+  @MinLength(2)
+  name?: string;
 
   @IsString()
-  @MinLength(10, { message: 'Description must be at least 10 characters' })
-  description!: string;
+  @MinLength(10)
+  description?: string;
+
+  @IsNumber()
+  @IsPositive()
+  price?: number;
+
+  @IsInt()
+  @Min(0)
+  stock?: number;
 }
