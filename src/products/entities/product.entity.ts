@@ -3,6 +3,7 @@ import {
   ManyToOne, CreateDateColumn, UpdateDateColumn,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
+import { Category } from '../../categories/entities/category.entity';
 
 @Entity('products')
   
@@ -22,9 +23,11 @@ export class Product {
   @Column({ default: 0 })
   stock?: number;
 
-  // The foreign key side of the relationship
   @ManyToOne(() => User, (user) => user.products, { eager: false })
   owner?: User;
+
+  @ManyToOne(() => Category, (category) => category.products, { eager: false })
+  category?: Category;
 
   @CreateDateColumn()
   createdAt?: Date;

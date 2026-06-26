@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { User } from '../users/entities/user.entity';
+import { Category } from '../categories/entities/category.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 
@@ -11,23 +12,37 @@ export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private productsRepository: Repository<Product>,
+    @InjectRepository(Category)
+    private categoriesRepository: Repository<Category>,
   ) {}
 
   async findAll(): Promise<Product[]> {
-    return this.productsRepository.find({ relations: ['owner'] });
+    return this.productsRepository.find({ relations: ['owner', 'category'] });
   }
 
   async findOne(id: number): Promise<Product> {
     const product = await this.productsRepository.findOne({
       where: { id },
-      relations: ['owner'],
+      relations: ['owner', 'category'],
     });
     if (!product) throw new NotFoundException(`Product #${id} not found`);
     return product;
   }
 
   async create(dto: CreateProductDto, owner: User): Promise<Product> {
-    const product = this.productsRepository.create({ ...dto, owner });
+    const category = await this.categoriesRepository.findOne({
+      where: { id: dto.categoryId },
+    });
+    if (!category) {
+      throw new NotFoundException(`Category #${dto.categoryId} not found`);
+    }
+
+    const { categoryId, ...productData } = dto;
+    const product = this.productsRepository.create({
+      ...productData,
+      owner,
+      category,
+    });
     return this.productsRepository.save(product);
   }
 

@@ -4,8 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
+import { CategoriesModule } from './categories/categories.module';
 import { User } from './users/entities/user.entity';
 import { Product } from './products/entities/product.entity';
+import { Category } from './categories/entities/category.entity';
 
 @Module({
   imports: [
@@ -23,14 +25,18 @@ import { Product } from './products/entities/product.entity';
         username: config.get('DB_USERNAME'),
         password: config.get('DB_PASSWORD'),
         database: config.get('DB_NAME'),
-        entities: [User, Product],
+        entities: [User, Product, Category],
         synchronize: true, // auto-creates tables from entities — dev only!
+        ssl: config.get('DB_HOST')?.includes('neon.tech')
+          ? { rejectUnauthorized: false }
+          : false,
       }),
     }),
 
     AuthModule,
     UsersModule,
     ProductsModule,
+    CategoriesModule,
   ],
 })
 export class AppModule {}
