@@ -8,7 +8,7 @@ async function bootstrap() {
 
   // 1. CORS — allow your Angular dev server origin
   app.enableCors({
-    origin: ['https://store-frontend-coral-zeta.vercel.app/'],   
+    origin: ['https://store-frontend-coral-zeta.vercel.app'],   
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
